@@ -139,6 +139,10 @@ def vad_collector(sample_rate, frame_duration_ms,
         yield b''.join([f.bytes for f in voiced_frames])
 
 
+def create_new_vad_object():
+    # vad = webrtcvad.Vad()
+    print("I am here")
+
 def main(args):
     if len(args) != 2:
         sys.stderr.write(

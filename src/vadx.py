@@ -1,4 +1,6 @@
 
+
+
 class BaseVad(object):
     def get_timestamps():
         pass
@@ -14,7 +16,17 @@ class WebRTCVAD(BaseVad):
     def __init__(self):
         print("Inside webrtc initialization")
 
-    def split(self, aggressiveness):
+    def __new__(self):
+        #initialize vad object only once
+        try:
+            print("Inside try")
+            from webrtc.pywebrtc import create_new_vad_object
+            create_new_vad_object()
+        except:
+            print("WebRTCVAD is not installed")
+        
+
+    def split(self, file_paths, aggressiveness=1):
         print("Set aggressiveness to ", aggressiveness)
 
 
