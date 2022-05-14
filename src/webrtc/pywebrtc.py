@@ -133,7 +133,7 @@ class WebRTCVAD(BaseVad):
             print("Inside try")
             # from webrtc.pywebrtc import create_new_vad_object
             # create_new_vad_object()
-            self.vad_obj = webrtcvad.Vad)()
+            self.vad_obj = webrtcvad.Vad()
         except:
             print("WebRTCVAD is not installed")
 
