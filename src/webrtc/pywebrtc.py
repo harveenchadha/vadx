@@ -2,8 +2,13 @@ import collections
 import contextlib
 import sys
 import wave
+import os
 import webrtcvad
-import torchaudio
+# try:
+#     import webrtcvad
+# except:
+#     os.system('pip install webrtcvad')
+#     import webrtcvad
 
 def read_wave(path):
     """Reads a .wav file.
@@ -123,7 +128,7 @@ def create_new_vad_object():
 
 
 
-class WebRTCVAD(BaseVad):
+class WebRTCClass(BaseVad):
     def __init__(self):
         print("Inside webrtc initialization")
 
@@ -140,7 +145,7 @@ class WebRTCVAD(BaseVad):
     def change_aggressivenss(self, aggressiveness):
         self.vad_obj.set_mode(aggressiveness)
 
-    def get_timestamps(self, audio_file, aggressiveness, frame_duration, padding_duration):  
+    def get_timestamps(self, audio_file, aggressiveness=3, frame_duration=30, padding_duration=300):  
         audio, sample_rate = read_wave(audio_file)
         frames = list(frame_generator(frame_duration, audio, sample_rate))
         start_time, end_time = []
@@ -149,34 +154,34 @@ class WebRTCVAD(BaseVad):
 
 
 
-def main(args):
-    #sample_rate 8000,16000,32000,48000
-    #frame_duration : 10,20,30
-    #aggressiveness : 0,1,2,3
-    #padding_duration : 300
+# def main(args):
+#     #sample_rate 8000,16000,32000,48000
+#     #frame_duration : 10,20,30
+#     #aggressiveness : 0,1,2,3
+#     #padding_duration : 300
 
 
 
 
 
-    if len(args) != 2:
-        sys.stderr.write(
-            'Usage: example.py <aggressiveness> <path to wav file>\n')
-        sys.exit(1)
-    audio, sample_rate = read_wave(args[1])
-    vad = webrtcvad.Vad(int(args[0]))
-    frames = frame_generator(30, audio, sample_rate)
-    frames = list(frames)
-    segments = vad_collector(sample_rate, 30, 300, vad, frames)
-    for i, segment in enumerate(segments):
-        path = 'chunk-%002d.wav' % (i,)
-        print(' Writing %s' % (path,))
-        write_wave(path, segment, sample_rate)
+#     if len(args) != 2:
+#         sys.stderr.write(
+#             'Usage: example.py <aggressiveness> <path to wav file>\n')
+#         sys.exit(1)
+#     audio, sample_rate = read_wave(args[1])
+#     vad = webrtcvad.Vad(int(args[0]))
+#     frames = frame_generator(30, audio, sample_rate)
+#     frames = list(frames)
+#     segments = vad_collector(sample_rate, 30, 300, vad, frames)
+#     for i, segment in enumerate(segments):
+#         path = 'chunk-%002d.wav' % (i,)
+#         print(' Writing %s' % (path,))
+#         write_wave(path, segment, sample_rate)
 
 
 
 
 
 
-if __name__ == '__main__':
-    main(sys.argv[1:])
+# if __name__ == '__main__':
+#     main(sys.argv[1:])

@@ -22,6 +22,7 @@ class BaseVad(object):
         pass
 
 
+
 # class WebRTCVAD(BaseVad):
 #     def __init__(self):
 #         print("Inside webrtc initialization")
@@ -47,10 +48,10 @@ class SileroVAD(BaseVad):
 class VadFactory(object):
     def __new__(self, backend='webrtc'):
         if backend == 'webrtc':
-            from webrtc.pywebrtc import WebRTCVAD
-            webrtc = WebRTCVAD()
+            from src.webrtc.pywebrtc import WebRTCClass
+            webrtc_obj = WebRTCClass()
             print("WebRTC is initialized")
-            return webrtc
+            return webrtc_obj
         if backend == 'silero':
             print("Silero is initialized")
             return SileroVAD()
