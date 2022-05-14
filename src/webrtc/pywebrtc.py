@@ -2,7 +2,6 @@ import collections
 import contextlib
 import sys
 import wave
-
 import webrtcvad
 import torchaudio
 
@@ -36,7 +35,6 @@ def write_wave(path, audio, sample_rate):
 
 
 class Frame(object):
-    """Represents a "frame" of audio data."""
     def __init__(self, bytes, timestamp, duration):
         self.bytes = bytes
         self.timestamp = timestamp
@@ -44,13 +42,6 @@ class Frame(object):
 
 
 def frame_generator(frame_duration_ms, audio, sample_rate):
-    """Generates audio frames from PCM audio data.
-
-    Takes the desired frame duration in milliseconds, the PCM data, and
-    the sample rate.
-
-    Yields Frames of the requested duration.
-    """
     n = int(sample_rate * (frame_duration_ms / 1000.0) * 2)
     offset = 0
     timestamp = 0.0
@@ -63,23 +54,8 @@ def frame_generator(frame_duration_ms, audio, sample_rate):
 
 def vad_collector(sample_rate, frame_duration_ms,
                   padding_duration_ms, vad, frames):
-    """Filters out non-voiced audio frames.
-
-    Given a webrtcvad.Vad and a source of audio frames, yields only
-    the voiced audio.
-
-    Uses a padded, sliding window algorithm over the audio frames.
-    When more than 90% of the frames in the window are voiced (as
-    reported by the VAD), the collector triggers and begins yielding
-    audio frames. Then the collector waits until 90% of the frames in
-    the window are unvoiced to detrigger.
-
-    The window is padded at the front and back to provide a small
-    amount of silence or the beginnings/endings of speech around the
-    voiced frames.
-
+    """
     Arguments:
-
     sample_rate - The audio sample rate, in Hz.
     frame_duration_ms - The frame duration in milliseconds.
     padding_duration_ms - The amount to pad the window, in milliseconds.
@@ -99,7 +75,7 @@ def vad_collector(sample_rate, frame_duration_ms,
     for frame in frames:
         is_speech = vad.is_speech(frame.bytes, sample_rate)
 
-        sys.stdout.write('1' if is_speech else '0')
+        #sys.stdout.write('1' if is_speech else '0')
         if not triggered:
             ring_buffer.append((frame, is_speech))
             num_voiced = len([f for f, speech in ring_buffer if speech])
@@ -108,7 +84,8 @@ def vad_collector(sample_rate, frame_duration_ms,
             # TRIGGERED state.
             if num_voiced > 0.9 * ring_buffer.maxlen:
                 triggered = True
-                sys.stdout.write('+(%s)' % (ring_buffer[0][0].timestamp,))
+                start_time.append(ring_buffer[0][0].timestamp)
+                #sys.stdout.write('+(%s)' % (ring_buffer[0][0].timestamp,))
                 # We want to yield all the audio we see from now until
                 # we are NOTTRIGGERED, but we have to start with the
                 # audio that's already in the ring buffer.
@@ -131,8 +108,9 @@ def vad_collector(sample_rate, frame_duration_ms,
                 ring_buffer.clear()
                 voiced_frames = []
     if triggered:
-        sys.stdout.write('-(%s)' % (frame.timestamp + frame.duration))
-    sys.stdout.write('\n')
+        #sys.stdout.write('-(%s)' % (frame.timestamp + frame.duration))
+        end_time.append(frame.timestamp + frame.duration)
+    #sys.stdout.write('\n')
     # If we have any leftover voiced audio when we run out of input,
     # yield it.
     if voiced_frames:
@@ -143,7 +121,44 @@ def create_new_vad_object():
     # vad = webrtcvad.Vad()
     print("I am here")
 
+
+
+class WebRTCVAD(BaseVad):
+    def __init__(self):
+        print("Inside webrtc initialization")
+
+    def __new__(self):
+        #initialize vad object only once
+        try:
+            print("Inside try")
+            # from webrtc.pywebrtc import create_new_vad_object
+            # create_new_vad_object()
+            self.vad_obj = webrtcvad.Vad)()
+        except:
+            print("WebRTCVAD is not installed")
+
+    def change_aggressivenss(self, aggressiveness):
+        self.vad_obj.set_mode(aggressiveness)
+
+    def get_timestamps(self, audio_file, aggressiveness, frame_duration, padding_duration):  
+        audio, sample_rate = read_wave(audio_file)
+        frames = list(frame_generator(frame_duration, audio, sample_rate))
+        start_time, end_time = []
+        segments = vad_collector(sample_rate, frame_duration, padding_duration, self.vad_obj, frames, start_time, end_time)
+        return start_time, end_time
+
+
+
 def main(args):
+    #sample_rate 8000,16000,32000,48000
+    #frame_duration : 10,20,30
+    #aggressiveness : 0,1,2,3
+    #padding_duration : 300
+
+
+
+
+
     if len(args) != 2:
         sys.stderr.write(
             'Usage: example.py <aggressiveness> <path to wav file>\n')

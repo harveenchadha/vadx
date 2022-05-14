@@ -12,6 +12,16 @@ class BaseVad(object):
         print("Inside split method")
         pass
 
+    def save_broken_files(blank_offset_duration):
+        pass
+
+    def get_broken_files(self, blank_offset_duration):
+        pass
+
+    def get_silence_removed_single_file(self, blank_offset_duration):
+        pass
+
+
 class WebRTCVAD(BaseVad):
     def __init__(self):
         print("Inside webrtc initialization")
@@ -37,6 +47,7 @@ class SileroVAD(BaseVad):
 class VadFactory(object):
     def __new__(self, backend='webrtc'):
         if backend == 'webrtc':
+            from webrtc import WebRTCVAD
             webrtc = WebRTCVAD()
             print("WebRTC is initialized")
             return webrtc
