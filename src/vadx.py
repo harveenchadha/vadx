@@ -21,9 +21,9 @@
 #         print("Set aggressiveness to ", aggressiveness)
 
 
-class SileroVAD(BaseVad):
-    def __init__(self):
-        print("Inside silero VAD initialization")
+# class SileroVAD(BaseVad):
+#     def __init__(self):
+#         print("Inside silero VAD initialization")
 
 class VadFactory(object):
     def __new__(self, backend='webrtc'):
