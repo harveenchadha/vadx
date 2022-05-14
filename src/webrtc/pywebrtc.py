@@ -161,6 +161,7 @@ class WebRTCClass(BaseVad):
             # from webrtc.pywebrtc import create_new_vad_object
             # create_new_vad_object()
             self.vad_obj = webrtcvad.Vad()
+            return self.vad_obj
         except:
             print("WebRTCVAD is not installed")
 
