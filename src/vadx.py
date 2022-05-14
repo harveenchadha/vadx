@@ -8,7 +8,7 @@ class BaseVad(object):
     def save_audio_chunks():
         pass
 
-    def split(self):
+    def split(self, file_paths, **kwargs):
         print("Inside split method")
         pass
 
