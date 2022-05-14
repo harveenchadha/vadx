@@ -14,4 +14,5 @@ if __name__ == "__main__":
 
     model_2 = VadFactory(backend='webrtc')
     #model.split()
-    model_2.get_timestamps('1.wav')
+    test = model_2.get_timestamps('1.wav')
+    print(test)

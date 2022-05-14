@@ -58,7 +58,7 @@ def frame_generator(frame_duration_ms, audio, sample_rate):
 
 
 def vad_collector(sample_rate, frame_duration_ms,
-                  padding_duration_ms, vad, frames):
+                  padding_duration_ms, vad, frames, start_time, end_time):
     """
     Arguments:
     sample_rate - The audio sample rate, in Hz.
@@ -151,10 +151,10 @@ class BaseVad(object):
 
 
 class WebRTCClass(BaseVad):
-    def __init__(self):
+    '''def __init__(self):
         print("Inside webrtc initialization")
-
-    def __new__(self):
+        pass'''
+    def __init__(self):
         #initialize vad object only once
         try:
             print("Inside try")
@@ -171,7 +171,8 @@ class WebRTCClass(BaseVad):
     def get_timestamps(self, audio_file, aggressiveness=3, frame_duration=30, padding_duration=300):  
         audio, sample_rate = read_wave(audio_file)
         frames = list(frame_generator(frame_duration, audio, sample_rate))
-        start_time, end_time = []
+        start_time = []
+        end_time = []
         segments = vad_collector(sample_rate, frame_duration, padding_duration, self.vad_obj, frames, start_time, end_time)
         return start_time, end_time
 
