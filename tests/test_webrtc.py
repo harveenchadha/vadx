@@ -14,5 +14,11 @@ if __name__ == "__main__":
 
     model_2 = VadFactory(backend='webrtc')
     #model.split()
-    test = model_2.get_timestamps('1.wav')
-    print(test)
+    print(sys.argv)
+    if len(sys.argv)>1:
+        filename = sys.argv[1]
+    else:
+        filename = '1.wav'
+    for agg in [0,1,2,3]:
+        print(model_2.get_timestamps(filename, agg))
+

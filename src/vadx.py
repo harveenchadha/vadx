@@ -30,7 +30,6 @@ class VadFactory(object):
         if backend == 'webrtc':
             from src.webrtc.pywebrtc import WebRTCClass
             webrtc_obj = WebRTCClass()
-            print(type(webrtc_obj))
             print("WebRTC is initialized")
             return webrtc_obj
         if backend == 'silero':

@@ -107,7 +107,8 @@ def vad_collector(sample_rate, frame_duration_ms,
             # unvoiced, then enter NOTTRIGGERED and yield whatever
             # audio we've collected.
             if num_unvoiced > 0.9 * ring_buffer.maxlen:
-                sys.stdout.write('-(%s)' % (frame.timestamp + frame.duration))
+                #sys.stdout.write('-(%s)' % (frame.timestamp + frame.duration))
+                end_time.append(frame.timestamp + frame.duration)
                 triggered = False
                 yield b''.join([f.bytes for f in voiced_frames])
                 ring_buffer.clear()
@@ -165,16 +166,24 @@ class WebRTCClass(BaseVad):
         except:
             print("WebRTCVAD is not installed")
 
-    def change_aggressivenss(self, aggressiveness):
+    def change_aggressiveness(self, aggressiveness):
         self.vad_obj.set_mode(aggressiveness)
 
     def get_timestamps(self, audio_file, aggressiveness=3, frame_duration=30, padding_duration=300):  
         audio, sample_rate = read_wave(audio_file)
+        self.change_aggressiveness(aggressiveness)
         frames = list(frame_generator(frame_duration, audio, sample_rate))
         start_time = []
         end_time = []
         segments = vad_collector(sample_rate, frame_duration, padding_duration, self.vad_obj, frames, start_time, end_time)
-        return start_time, end_time
+        #print(segments)
+        chunks = 0
+        for i, segment in enumerate(segments):
+            chunks = chunks + 1
+        if chunks != len(start_time):
+            print("Error: Segments not broken properly")
+        
+        return list(zip(start_time, end_time))
 
 
 
