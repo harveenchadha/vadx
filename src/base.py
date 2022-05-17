@@ -2,9 +2,9 @@ class BaseVad(object):
     def get_timestamps():
         pass
 
-    def get_timestamps_dir(self, audio_dir, **kwargs):
-        for audio_file in audio_dir:
-            print(self.get_timestamps(audio_file, kwargs))
+    # def get_timestamps_dir(self, audio_dir, **kwargs):
+    #     for audio_file in audio_dir:
+    #         print(self.get_timestamps(audio_file, kwargs))
 
 
     def save_audio_chunks():

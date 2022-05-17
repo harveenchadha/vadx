@@ -177,12 +177,12 @@ class WebRTCClass(BaseVad):
 
         dict_mapping = {}
         for file in audio_files:
-            timestamps = self.get_timestamps_single(audio, frame_duration, padding_duration)
+            timestamps = self.get_timestamps_single(file, frame_duration, padding_duration)
             dict_mapping[file] = timestamps
 
         if type(audio_files) == str:
             return dict_mapping[audio_file]
-            
+
         return dict_mapping
 
 
