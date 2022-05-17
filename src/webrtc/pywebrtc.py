@@ -153,9 +153,9 @@ class WebRTCClass(BaseVad):
     def change_aggressiveness(self, aggressiveness):
         self.vad_obj.set_mode(aggressiveness)
 
-    def get_timestamps(self, audio_file, aggressiveness=3, frame_duration=30, padding_duration=300):  
+
+    def get_timestamps_single(self, audio_file, frame_duration, padding_duration):
         audio, sample_rate = read_wave(audio_file)
-        self.change_aggressiveness(aggressiveness)
         frames = list(frame_generator(frame_duration, audio, sample_rate))
         start_time = []
         end_time = []
@@ -169,6 +169,21 @@ class WebRTCClass(BaseVad):
         
         return list(zip(start_time, end_time))
 
+
+    def get_timestamps(self, audio_files, aggressiveness=3, frame_duration=30, padding_duration=300):
+        self.change_aggressiveness(aggressiveness)
+        if type(audio_files) == str:
+            audio_files = [audio_files]
+
+        dict_mapping = {}
+        for file in audio_files:
+            timestamps = self.get_timestamps_single(audio, frame_duration, padding_duration)
+            dict_mapping[file] = timestamps
+
+        if type(audio_files) == str:
+            return dict_mapping[audio_file]
+            
+        return dict_mapping
 
 
 # def main(args):
