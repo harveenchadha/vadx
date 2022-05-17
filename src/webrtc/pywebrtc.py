@@ -181,7 +181,7 @@ class WebRTCClass(BaseVad):
             dict_mapping[file] = timestamps
 
         if type(audio_files) == str:
-            return dict_mapping[audio_file]
+            return dict_mapping[audio_files]
 
         return dict_mapping
 
