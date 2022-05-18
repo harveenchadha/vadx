@@ -172,18 +172,17 @@ class WebRTCClass(BaseVad):
 
     def get_timestamps(self, audio_files, aggressiveness=3, frame_duration=30, padding_duration=300):
         self.change_aggressiveness(aggressiveness)
-        if type(audio_files) == str:
-            audio_files = [audio_files]
-
+        audio_files = super().get_timestamps(audio_files)
         dict_mapping = {}
+
         for file in audio_files:
             timestamps = self.get_timestamps_single(file, frame_duration, padding_duration)
             dict_mapping[file] = timestamps
 
-        if type(audio_files) == str:
-            return dict_mapping[audio_files]
-
         return dict_mapping
+
+    
+    
 
 
 # def main(args):
